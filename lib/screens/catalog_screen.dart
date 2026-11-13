@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../providers/product_provider.dart';
 import '../providers/cart_provider.dart';
 import 'cart_screen.dart';
+import 'product_detail_screen.dart';
 
 class CatalogScreen extends StatelessWidget {
   const CatalogScreen({super.key});
@@ -10,7 +12,7 @@ class CatalogScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Smart Catalog'),
+        title: const Text('Cloud Product Explorer'),
         actions: [
           Consumer<CartProvider>(
             builder: (context, cartProvider, child) {
@@ -37,47 +39,107 @@ class CatalogScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<CartProvider>(
-        builder: (context, cartProvider, child) {
-          final products = cartProvider.catalogProducts;
-          return ListView.builder(
-            itemCount: products.length,
-            padding: const EdgeInsets.all(12),
-            itemBuilder: (context, index) {
-              final product = products[index];
-              final inCart = cartProvider.isInCart(product);
+      body: Consumer<ProductProvider>(
+        builder: (context, productProvider, child) {
+          // 1. Loading State
+          if (productProvider.isLoading && productProvider.products.isEmpty) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-              return Card(
-                elevation: 2,
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                    child: Icon(product.icon, color: Theme.of(context).colorScheme.primary),
-                  ),
-                  title: Text(product.title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text('${product.category} • \$${product.price.toStringAsFixed(2)}'),
-                  trailing: ElevatedButton.icon(
-                    onPressed: () {
-                      cartProvider.toggleCart(product);
-                    },
-                    icon: Icon(inCart ? Icons.check : Icons.add_shopping_cart, size: 18),
-                    label: Text(inCart ? 'In Cart' : 'Add'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: inCart
-                          ? Theme.of(context).colorScheme.secondaryContainer
-                          : Theme.of(context).colorScheme.primaryContainer,
-                      foregroundColor: inCart
-                          ? Theme.of(context).colorScheme.onSecondaryContainer
-                          : Theme.of(context).colorScheme.onPrimaryContainer,
+          // 2. Error State with Retry Button
+          if (productProvider.errorMessage != null && productProvider.products.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text(
+                      productProvider.errorMessage!,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16, color: Colors.black87),
                     ),
-                  ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () => productProvider.fetchProducts(),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Retry Connection'),
+                    ),
+                  ],
                 ),
-              );
-            },
+              ),
+            );
+          }
+
+          // 3. Success State with Pull-to-Refresh
+          final products = productProvider.products;
+          return RefreshIndicator(
+            onRefresh: () => productProvider.refreshProducts(),
+            child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: products.length,
+              padding: const EdgeInsets.all(12),
+              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return Card(
+                  elevation: 2,
+                  margin: const EdgeInsets.symmetric(vertical: 6),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12),
+                    leading: Hero(
+                      tag: 'product_image_${product.id}',
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          product.imageUrl,
+                          width: 60,
+                          height: 60,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, size: 60),
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      product.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 4),
+                        Text('\$${product.price.toStringAsFixed(2)}', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.star, size: 16, color: Colors.amber),
+                            const SizedBox(width: 4),
+                            Text('${product.rating} (${product.reviewCount})'),
+                          ],
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailScreen(product: product),
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

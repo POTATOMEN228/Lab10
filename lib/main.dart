@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/cart_provider.dart';
+import 'providers/product_provider.dart';
 import 'screens/catalog_screen.dart';
 
 void main() {
-  runApp(const SmartCatalogApp());
+  runApp(const CloudProductExplorerApp());
 }
 
-class SmartCatalogApp extends StatelessWidget {
-  const SmartCatalogApp({super.key});
+class CloudProductExplorerApp extends StatelessWidget {
+  const CloudProductExplorerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CartProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ],
       child: MaterialApp(
-        title: 'Smart Catalog',
+        title: 'Cloud Product Explorer',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorSchemeSeed: Colors.deepOrange,
+          colorSchemeSeed: Colors.deepPurple,
         ),
         home: const CatalogScreen(),
       ),
