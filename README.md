@@ -1,6 +1,6 @@
-# Lab 9 - Tasker Application
+# Lab 10 - Cloud Product Explorer & Detail Carousel
 
-A Flutter application built with Material 3.
+A Flutter application built with Material 3, `provider`, `http`, 3 UI states, Master-Detail navigation with `Hero` transition, photo carousel (`PageView`), and Share Deep Link bottom sheet.
 
 ## 🚀 Getting Started
 
@@ -14,8 +14,8 @@ Ensure you have installed:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/POTATOMEN228/lab9.git
-   cd lab9
+   git clone https://github.com/POTATOMEN228/Lab10.git
+   cd Lab10
    ```
 
 2. **Install dependencies:**
