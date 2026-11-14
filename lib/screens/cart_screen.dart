@@ -7,6 +7,9 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF5F67AD);
+    const secondaryColor = Color(0xFFFF5C5C);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Cart'),
@@ -56,13 +59,13 @@ class CartScreen extends StatelessWidget {
                       ),
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                          child: Icon(product.icon, color: Theme.of(context).colorScheme.primary),
+                          backgroundColor: primaryColor.withOpacity(0.15),
+                          child: Icon(product.icon, color: primaryColor),
                         ),
                         title: Text(product.title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
+                        subtitle: Text('\$${product.price.toStringAsFixed(2)}', style: const TextStyle(color: primaryColor, fontWeight: FontWeight.w600)),
                         trailing: IconButton(
-                          icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+                          icon: const Icon(Icons.remove_circle_outline, color: secondaryColor),
                           onPressed: () {
                             cartProvider.removeFromCart(product);
                           },
@@ -75,7 +78,7 @@ class CartScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                  color: primaryColor.withOpacity(0.05),
                   border: const Border(top: BorderSide(color: Colors.black12)),
                 ),
                 child: Row(
@@ -87,10 +90,10 @@ class CartScreen extends StatelessWidget {
                     ),
                     Text(
                       '\$${cartProvider.totalPrice.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontSize: 20,
+                      style: const TextStyle(
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: primaryColor,
                       ),
                     ),
                   ],

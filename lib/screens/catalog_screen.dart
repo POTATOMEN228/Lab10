@@ -10,6 +10,9 @@ class CatalogScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const primaryColor = Color(0xFF5F67AD);
+    const secondaryColor = Color(0xFFFF5C5C);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Cloud Product Explorer'),
@@ -21,6 +24,8 @@ class CatalogScreen extends StatelessWidget {
                 child: Badge.count(
                   count: cartProvider.itemCount,
                   isLabelVisible: cartProvider.itemCount > 0,
+                  backgroundColor: secondaryColor,
+                  textColor: Colors.white,
                   child: IconButton(
                     key: const Key('cartButton'),
                     icon: const Icon(Icons.shopping_cart),
@@ -44,7 +49,7 @@ class CatalogScreen extends StatelessWidget {
           // 1. Loading State
           if (productProvider.isLoading && productProvider.products.isEmpty) {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: primaryColor),
             );
           }
 
@@ -56,7 +61,7 @@ class CatalogScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                    const Icon(Icons.error_outline, size: 64, color: secondaryColor),
                     const SizedBox(height: 16),
                     Text(
                       productProvider.errorMessage!,
@@ -68,6 +73,10 @@ class CatalogScreen extends StatelessWidget {
                       onPressed: () => productProvider.fetchProducts(),
                       icon: const Icon(Icons.refresh),
                       label: const Text('Retry Connection'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
                     ),
                   ],
                 ),
@@ -78,6 +87,7 @@ class CatalogScreen extends StatelessWidget {
           // 3. Success State with Pull-to-Refresh
           final products = productProvider.products;
           return RefreshIndicator(
+            color: primaryColor,
             onRefresh: () => productProvider.refreshProducts(),
             child: ListView.separated(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -110,6 +120,7 @@ class CatalogScreen extends StatelessWidget {
                               height: 60,
                               child: Center(
                                 child: CircularProgressIndicator(
+                                  color: primaryColor,
                                   value: loadingProgress.expectedTotalBytes != null
                                       ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
                                       : null,
@@ -121,8 +132,8 @@ class CatalogScreen extends StatelessWidget {
                           errorBuilder: (_, __, ___) => Container(
                             width: 60,
                             height: 60,
-                            color: Theme.of(context).colorScheme.primaryContainer,
-                            child: Icon(product.icon, color: Theme.of(context).colorScheme.primary),
+                            color: const Color(0xFF5F67AD).withOpacity(0.1),
+                            child: const Icon(Icons.draw, color: primaryColor),
                           ),
                         ),
                       ),
@@ -137,7 +148,10 @@ class CatalogScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 4),
-                        Text('\$${product.price.toStringAsFixed(2)}', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600)),
+                        Text(
+                          '\$${product.price.toStringAsFixed(2)}',
+                          style: const TextStyle(color: primaryColor, fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
                         const SizedBox(height: 4),
                         Row(
                           children: [

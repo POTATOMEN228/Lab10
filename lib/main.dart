@@ -11,6 +11,9 @@ void main() {
 class CloudProductExplorerApp extends StatelessWidget {
   const CloudProductExplorerApp({super.key});
 
+  static const Color primaryColor = Color(0xFF5F67AD);
+  static const Color secondaryColor = Color(0xFFFF5C5C);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -23,7 +26,28 @@ class CloudProductExplorerApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
-          colorSchemeSeed: Colors.deepPurple,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: primaryColor,
+            primary: primaryColor,
+            secondary: secondaryColor,
+            secondaryContainer: const Color(0xFFFFE5E5),
+            onSecondaryContainer: secondaryColor,
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: primaryColor,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: secondaryColor,
+            foregroundColor: Colors.white,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+            ),
+          ),
         ),
         home: const CatalogScreen(),
       ),

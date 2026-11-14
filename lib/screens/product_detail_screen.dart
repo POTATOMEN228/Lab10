@@ -17,6 +17,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int _currentIndex = 0;
   final PageController _pageController = PageController();
 
+  static const primaryColor = Color(0xFF5F67AD);
+  static const secondaryColor = Color(0xFFFF5C5C);
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -57,7 +60,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.copy, size: 20),
+                      icon: const Icon(Icons.copy, size: 20, color: primaryColor),
                       onPressed: () {
                         Clipboard.setData(ClipboardData(text: deepLink));
                         Navigator.pop(context);
@@ -120,15 +123,15 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               fit: BoxFit.contain,
                               loadingBuilder: (context, child, loadingProgress) {
                                 if (loadingProgress == null) return child;
-                                return const Center(child: CircularProgressIndicator());
+                                return const Center(child: CircularProgressIndicator(color: primaryColor));
                               },
                               errorBuilder: (_, __, ___) => Container(
                                 height: 250,
-                                color: Theme.of(context).colorScheme.primaryContainer,
+                                color: primaryColor.withOpacity(0.1),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(widget.product.icon, size: 80, color: Theme.of(context).colorScheme.primary),
+                                    Icon(widget.product.icon, size: 80, color: primaryColor),
                                     const SizedBox(height: 8),
                                     Text(widget.product.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                                   ],
@@ -151,7 +154,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.black54,
+                              color: primaryColor.withOpacity(0.85),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -191,8 +194,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Chip(
-                          label: Text(widget.product.category),
-                          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          label: Text(widget.product.category, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          backgroundColor: primaryColor,
                         ),
                         const SizedBox(height: 8),
                         Text(
@@ -205,10 +208,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           children: [
                             Text(
                               '\$${widget.product.price.toStringAsFixed(2)}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
+                                color: primaryColor,
                               ),
                             ),
                             Row(
@@ -266,12 +269,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     label: Text(inCart ? 'Remove from Cart' : 'Add to Cart'),
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50),
-                      backgroundColor: inCart
-                          ? Theme.of(context).colorScheme.secondaryContainer
-                          : Theme.of(context).colorScheme.primary,
-                      foregroundColor: inCart
-                          ? Theme.of(context).colorScheme.onSecondaryContainer
-                          : Theme.of(context).colorScheme.onPrimary,
+                      backgroundColor: inCart ? secondaryColor : primaryColor,
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
