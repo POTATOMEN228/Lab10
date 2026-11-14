@@ -37,15 +37,14 @@ class Product {
 
   IconData get icon {
     switch (category) {
-      case 'electronics':
-        return Icons.headphones;
-      case 'jewelery':
-        return Icons.diamond;
-      case "men's clothing":
-      case "women's clothing":
-        return Icons.checkroom;
+      case 'Pen Display':
+        return Icons.monitor;
+      case 'Graphics Tablet':
+        return Icons.draw;
+      case 'Drawing Tablet':
+        return Icons.edit;
       default:
-        return Icons.shopping_bag;
+        return Icons.palette;
     }
   }
 }
