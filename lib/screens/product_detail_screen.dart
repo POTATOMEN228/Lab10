@@ -79,7 +79,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Fake 3 images for carousel using the product image URL
     final images = [
       widget.product.imageUrl,
       widget.product.imageUrl,
@@ -119,7 +118,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             final imageWidget = Image.network(
                               images[index],
                               fit: BoxFit.contain,
-                              errorBuilder: (_, __, ___) => const Icon(Icons.image_not_supported, size: 100),
+                              loadingBuilder: (context, child, loadingProgress) {
+                                if (loadingProgress == null) return child;
+                                return const Center(child: CircularProgressIndicator());
+                              },
+                              errorBuilder: (_, __, ___) => Container(
+                                height: 250,
+                                color: Theme.of(context).colorScheme.primaryContainer,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(widget.product.icon, size: 80, color: Theme.of(context).colorScheme.primary),
+                                    const SizedBox(height: 8),
+                                    Text(widget.product.title, style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
                             );
 
                             if (index == 0) {
